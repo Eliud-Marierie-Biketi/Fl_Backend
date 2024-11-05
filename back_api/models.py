@@ -6,7 +6,7 @@ from django.conf import settings
 
 # Teacher model with subscription functionality
 class Teacher(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="teacher_profile")
     email = models.EmailField(max_length=100)
     school_name = models.CharField(max_length=100, blank=True)
     mobile_phone = models.CharField(

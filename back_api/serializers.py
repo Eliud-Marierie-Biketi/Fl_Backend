@@ -48,6 +48,8 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Invalid username or password.")
         
         return attrs    
+
+
 # User Serializer
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
