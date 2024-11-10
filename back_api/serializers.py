@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
+
 from .models import (
     Teacher, Profile, Class, Subject, Exam, ExamSubject,
     Student, Score, Result, StudentReport, ClassPerformance,
@@ -33,21 +35,52 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             school_name=school_name,
             mobile_phone=mobile_phone
         )
-        return user
-    
+
+        # Generate or get the authentication token for the user
+        token, created = Token.objects.get_or_create(user=user)
+
+        # Return the user and token
+        return {
+            'user': user,
+            'token': token.key
+        }
+
+    def to_representation(self, instance):
+        # Override to_representation to return a custom response
+        return {
+            'username': instance['user'].username,
+            'email': instance['user'].email,
+            'token': instance['token']
+        }
+  
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
-    password = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
 
     def validate(self, attrs):
         username = attrs.get('username')
         password = attrs.get('password')
 
+        # Authenticate the user
         user = authenticate(username=username, password=password)
         if user is None:
             raise serializers.ValidationError("Invalid username or password.")
-        
-        return attrs    
+
+        # Generate or get the authentication token for the user
+        token, created = Token.objects.get_or_create(user=user)
+
+        return {
+            'user': user,
+            'token': token.key
+        }
+
+    def to_representation(self, instance):
+        # Ensure we correctly handle the 'user' object and token
+        return {
+            'username': instance['user'].username,  # Access the user object correctly
+            'email': instance['user'].email,        # Access user email
+            'token': instance['token']              # Access the token
+        }
 
 
 # User Serializer

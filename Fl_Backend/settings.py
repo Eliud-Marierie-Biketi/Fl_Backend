@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-226c-1iegh^h8pdyxrco_q(7%fgp$o=wxf!cedtfe0cs5il-q%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.96.185.74', '127.0.0.1', '10.96.165.144', '192.168.137.1']
+ALLOWED_HOSTS = ['10.96.185.74', '127.0.0.1', '10.96.165.144', '192.168.137.1', '192.168.27.204']
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     #Third party apps
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
 
     #My apps
     'back_api',
@@ -51,15 +52,26 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+# Testing purposes
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
 }
 
 
